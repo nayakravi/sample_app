@@ -14,6 +14,7 @@ group :test do
   gem 'sqlite3'
   gem 'rspec'
   gem 'webrat'
+  gem 'spork'
 end
 
 group :production do
