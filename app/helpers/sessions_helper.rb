@@ -1,12 +1,8 @@
 module SessionsHelper
 
 	def sign_in(user)
-		if use_cookie
-			cookies.permanent.signed[:remember_token] = [user.id, user.salt]
-		else
-			session[:current_user_id] = user.id
-		end
-
+		cookies.permanent.signed[:remember_token] = [user.id, user.salt]
+		session[:current_user_id] = user.id
 		self.current_user = user
 	end
 
@@ -27,13 +23,23 @@ module SessionsHelper
 	end
 
 	def sign_out
-		if use_cookie
-			cookies.delete(:remember_token)
-		else
-			session[:current_user_id] = nil
-		end
-		
+		cookies.delete(:remember_token)
+		session[:current_user_id] = nil
 		self.current_user = nil
+	end
+
+	def current_user?(user)
+		user == current_user
+	end
+
+	def deny_access
+		store_location
+		redirect_to signin_path, :notice => "Please sign in to access this page."
+	end
+
+	def redirect_back_or(default)
+		redirect_to(session[:return_to] || default)
+		clear_return_to
 	end
 
 	private
@@ -55,5 +61,13 @@ module SessionsHelper
 
 		def use_cookie
 			return true
+		end
+
+		def store_location
+			session[:return_to] = request.fullpath
+		end
+
+		def clear_return_to
+			session[:return_to] = nil
 		end
 end
