@@ -10,5 +10,11 @@ FactoryGirl.define do
 	sequence :email do |n|
 		"person-#{n}@example.com"
 	end
+
+	factory :micropost do |micropost|
+		micropost.content "Foo bar"
+		micropost.association :user
+	end
 end
+
 
